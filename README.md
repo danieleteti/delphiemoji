@@ -2,6 +2,8 @@
 
 **Delphi Emoji** is a comprehensive Delphi unit that provides easy access to all modern emojis directly in your Delphi applications. This library is <u>automatically generated</u> from the latest Unicode standards, ensuring your apps always have access to the most current emoji collection. Features
 
+![](https://github.com/danieleteti/delphiemoji/blob/08086ce090f91351dca9644d9c3816e296815351/delphi_emoji_logo.png)
+
 - ✅ **Always up-to-date** - Automatically generated from the latest Unicode standards using a Python script
 - ✅ **Cross-platform** - Works with all Delphi versions that support Unicode strings (XE2+)
 - ✅ **Easy integration** - Simple API for accessing emojis
