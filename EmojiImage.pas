@@ -1,35 +1,76 @@
-unit EmojiPaintBox;
+unit EmojiImage;
 
 interface
 
 uses
-  System.SysUtils, System.Classes, Vcl.Controls, Vcl.Graphics, UnicodeEmoji,
-  Vcl.ExtCtrls;
+  System.SysUtils, System.Classes, Winapi.Messages, Vcl.Controls, Vcl.Graphics,
+  UnicodeEmoji;
 
 const
-  EMOJI_PAINTBOX_VERSION = '0.5';
+  EMOJI_IMAGE_VERSION = '0.5';
 
 type
-  TEmojiPaintBox = class(TPaintBox)
+  TEmojiImage = class(TGraphicControl)
   private
     FEmojiName: string;
+    FHoverEmojiName: string;
     FPaddingPercentage: Integer;
     FUseColoredEmojiAtDesignTime: Boolean;
+    FIsHovered: Boolean;
     procedure SetEmojiName(const Value: string);
+    procedure SetHoverEmojiName(const Value: string);
     procedure SetPaddingPercentage(const Value: Integer);
     procedure SetUseColoredEmojiAtDesignTime(const Value: Boolean);
     procedure DrawErrorMessage(const AMessage: string);
     function GetVersion: string;
+    function GetCurrentEmoji: string;
   protected
     procedure Paint; override;
+    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
   public
     constructor Create(AOwner: TComponent); override;
     class function IsEmojiSupported: Boolean;
+    property IsHovered: Boolean read FIsHovered;
   published
+    { TEmojiImage specific properties }
     property EmojiName: string read FEmojiName write SetEmojiName;
+    property HoverEmojiName: string read FHoverEmojiName write SetHoverEmojiName;
     property PaddingPercentage: Integer read FPaddingPercentage write SetPaddingPercentage default 0;
     property UseColoredEmojiAtDesignTime: Boolean read FUseColoredEmojiAtDesignTime write SetUseColoredEmojiAtDesignTime default False;
     property Version: string read GetVersion;
+    { Inherited properties }
+    property Align;
+    property Anchors;
+    property Constraints;
+    property Cursor;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property Enabled;
+    property Hint;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property Touch;
+    property Visible;
+    { Inherited events }
+    property OnClick;
+    property OnContextPopup;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDock;
+    property OnEndDrag;
+    property OnGesture;
+    property OnMouseActivate;
+    property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnStartDock;
+    property OnStartDrag;
   end;
 
 implementation
@@ -37,27 +78,53 @@ implementation
 uses
   System.Types, System.Math, Winapi.Windows, EmojiUtils;
 
-{ TEmojiPaintBox }
+{ TEmojiImage }
 
-constructor TEmojiPaintBox.Create(AOwner: TComponent);
+constructor TEmojiImage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FEmojiName := 'waving hand';
+  FHoverEmojiName := '';
   FPaddingPercentage := 0;
   FUseColoredEmojiAtDesignTime := False;
+  FIsHovered := False;
 end;
 
-class function TEmojiPaintBox.IsEmojiSupported: Boolean;
+class function TEmojiImage.IsEmojiSupported: Boolean;
 begin
   Result := TEmojiRenderer.IsEmojiSupported;
 end;
 
-function TEmojiPaintBox.GetVersion: string;
+function TEmojiImage.GetVersion: string;
 begin
-  Result := EMOJI_PAINTBOX_VERSION;
+  Result := EMOJI_IMAGE_VERSION;
 end;
 
-procedure TEmojiPaintBox.DrawErrorMessage(const AMessage: string);
+function TEmojiImage.GetCurrentEmoji: string;
+begin
+  if FIsHovered and (FHoverEmojiName <> '') then
+    Result := FHoverEmojiName
+  else
+    Result := FEmojiName;
+end;
+
+procedure TEmojiImage.CMMouseEnter(var Message: TMessage);
+begin
+  inherited;
+  FIsHovered := True;
+  if FHoverEmojiName <> '' then
+    Invalidate;
+end;
+
+procedure TEmojiImage.CMMouseLeave(var Message: TMessage);
+begin
+  inherited;
+  FIsHovered := False;
+  if FHoverEmojiName <> '' then
+    Invalidate;
+end;
+
+procedure TEmojiImage.DrawErrorMessage(const AMessage: string);
 var
   LRect: TRect;
 begin
@@ -72,7 +139,7 @@ begin
     DT_CENTER or DT_VCENTER or DT_WORDBREAK);
 end;
 
-procedure TEmojiPaintBox.Paint;
+procedure TEmojiImage.Paint;
 const
   REFERENCE_SIZE = 100;
 var
@@ -94,10 +161,10 @@ begin
     Exit;
   end;
 
-  LEmoji := FindEmojiByName(FEmojiName);
+  LEmoji := FindEmojiByName(GetCurrentEmoji);
   if LEmoji = '' then
   begin
-    DrawErrorMessage('Emoji not found: "' + FEmojiName + '"');
+    DrawErrorMessage('Emoji not found: "' + GetCurrentEmoji + '"');
     Exit;
   end;
 
@@ -141,7 +208,7 @@ begin
   end;
 end;
 
-procedure TEmojiPaintBox.SetEmojiName(const Value: string);
+procedure TEmojiImage.SetEmojiName(const Value: string);
 begin
   if FEmojiName <> Value then
   begin
@@ -150,7 +217,17 @@ begin
   end;
 end;
 
-procedure TEmojiPaintBox.SetPaddingPercentage(const Value: Integer);
+procedure TEmojiImage.SetHoverEmojiName(const Value: string);
+begin
+  if FHoverEmojiName <> Value then
+  begin
+    FHoverEmojiName := Value;
+    if FIsHovered then
+      Invalidate;
+  end;
+end;
+
+procedure TEmojiImage.SetPaddingPercentage(const Value: Integer);
 var
   LValue: Integer;
 begin
@@ -166,7 +243,7 @@ begin
   end;
 end;
 
-procedure TEmojiPaintBox.SetUseColoredEmojiAtDesignTime(const Value: Boolean);
+procedure TEmojiImage.SetUseColoredEmojiAtDesignTime(const Value: Boolean);
 begin
   if FUseColoredEmojiAtDesignTime <> Value then
   begin

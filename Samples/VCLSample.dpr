@@ -3,7 +3,8 @@ program VCLSample;
 uses
   Vcl.Forms,
   MainFormU in 'MainFormU.pas' {Form9},
-  UnicodeEmoji in '..\UnicodeEmoji.pas';
+  UnicodeEmoji in '..\UnicodeEmoji.pas',
+  EmojiUtils in '..\EmojiUtils.pas';
 
 {$R *.res}
 

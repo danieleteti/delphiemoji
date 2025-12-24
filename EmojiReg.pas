@@ -3,7 +3,7 @@ unit EmojiReg;
 interface
 
 uses
-  System.Classes, DesignIntf, EmojiPaintBox, EmojiEditor,
+  System.Classes, DesignIntf, EmojiImage, EmojiEditor,
   EmojiComponentEditor, EmojiSelectorForm;
 
 procedure Register;
@@ -12,9 +12,10 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('Samples', [TEmojiPaintBox]);
-  RegisterComponentEditor(TEmojiPaintBox, TEmojiPaintBoxEditor);
-  RegisterPropertyEditor(TypeInfo(string), TEmojiPaintBox, 'EmojiName', TEmojiProperty);
+  RegisterComponents('Emoji', [TEmojiImage]);
+  RegisterComponentEditor(TEmojiImage, TEmojiImageEditor);
+  RegisterPropertyEditor(TypeInfo(string), TEmojiImage, 'EmojiName', TEmojiProperty);
+  RegisterPropertyEditor(TypeInfo(string), TEmojiImage, 'HoverEmojiName', TEmojiProperty);
 end;
 
 end.

@@ -14,6 +14,13 @@ object Form9: TForm9
     624
     441)
   TextHeight = 15
+  object PaintBox1: TPaintBox
+    Left = 112
+    Top = 48
+    Width = 313
+    Height = 265
+    OnPaint = PaintBox1Paint
+  end
   object Button1: TButton
     Left = 8
     Top = 8
@@ -21,12 +28,13 @@ object Form9: TForm9
     Height = 25
     Caption = 'Button1'
     TabOrder = 0
+    OnClick = Button1Click
   end
   object ListBox1: TListBox
     Left = 8
-    Top = 39
-    Width = 608
-    Height = 394
+    Top = 352
+    Width = 465
+    Height = 81
     AutoComplete = False
     Anchors = [akLeft, akTop, akRight, akBottom]
     Columns = 2

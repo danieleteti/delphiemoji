@@ -6,8 +6,6 @@ uses
   System.Math,
   UnicodeEmoji in '..\UnicodeEmoji.pas';
 
-// la unit autogenerata
-
 begin
   // Set code page UTF8 for Windows Console
   SetConsoleOutputCP(CP_UTF8);
@@ -20,7 +18,7 @@ begin
   Writeln('TEmoji.MAN_HEALTH_WORKER: ', TEmoji.MAN_HEALTH_WORKER);
 
 
-  // Esempio 2: Print some emoji randomly
+  // Example 2: Print some emoji randomly
   var lAllEmojis := GetAllEmoji;
   var lAllEmojiNames := GetAllEmojiNames;
 

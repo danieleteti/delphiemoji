@@ -12,8 +12,18 @@
 
 ## Installation
 
+### Option 1: Simple Usage (Unit Only)
+
 - Add `UnicodeEmoji.pas` to your project or to your library path
 - Add the unit to your uses clause: `uses UnicodeEmoji;`
+
+### Option 2: VCL Component with Visual Editor
+
+1. Open `EmojiComponent.dpk` in Delphi IDE
+2. Right-click on `EmojiComponent.bpl` → **Compile**
+3. Right-click on `EmojiComponent.bpl` → **Install**
+4. The `TEmojiPaintBox` component will appear in the **Emoji** palette
+5. Double-click the component on a form to open the visual emoji selector
 
 ## Usage
 
@@ -61,6 +71,57 @@ begin
   for Name in EmojiNames do
     ListBox1.Items.Add(Name);
 end;
+```
+
+### Using TEmojiPaintBox Component
+
+After installing the package, you can use the `TEmojiPaintBox` component:
+
+```pascal
+// Set emoji by name - the component auto-scales and centers the emoji
+EmojiPaintBox1.EmojiName := 'grinning face';
+EmojiPaintBox1.EmojiName := 'red heart';
+EmojiPaintBox1.EmojiName := 'thumbs up';
+```
+
+The component features:
+- Automatic scaling to fit the component bounds
+- Centered emoji display
+- High-quality Direct2D rendering with colored emoji support
+- Visual emoji picker in the IDE (double-click the component)
+
+### Advanced Rendering with TEmojiRenderer
+
+For advanced rendering scenarios, use `TEmojiRenderer` from `EmojiUtils.pas`:
+
+```pascal
+uses EmojiUtils, UnicodeEmoji;
+
+// Simple rendering
+TEmojiRenderer.DrawEmoji(Canvas, TEmoji.ROCKET, 10, 10, 48);
+
+// Rendering with custom configuration
+var
+  Config: TEmojiRenderConfig;
+begin
+  Config := TEmojiRenderConfig.Default;
+  Config.FontSize := 72;
+  Config.BackgroundColor := clWhite;
+  Config.EnableColorFont := True;
+  TEmojiRenderer.DrawEmoji(Canvas, TEmoji.STAR, Rect(0, 0, 100, 100), Config);
+end;
+
+// Measure emoji size before rendering
+var
+  Size: TSize;
+begin
+  Size := TEmojiRenderer.MeasureEmoji(TEmoji.FIRE, 48);
+  // Size.cx = width, Size.cy = height
+end;
+
+// Check if emoji rendering is supported
+if TEmojiRenderer.IsEmojiSupported then
+  ShowMessage('Emoji fonts available!');
 ```
 
 ## Console Application Example
@@ -148,11 +209,24 @@ end;
 end.
 ```
 
+## Sample Applications
+
+The `Samples` folder contains ready-to-run demo applications:
+
+| Sample | Description |
+|--------|-------------|
+| **ConsoleSample** | Simple console app demonstrating emoji constants and FindEmojiByName |
+| **VCLSample** | Basic VCL app with Direct2D emoji rendering |
+| **VCLSample2** | Advanced demo with 4 tabs: basic rendering, configuration options, font info, and performance testing |
+
+Open `Samples/ProjectGroup1.groupproj` to load all VCL samples at once.
+
 ## Requirements
 
 - Delphi XE2 or newer (Unicode support required)
-- Python 3.6+ to run the generation script
-- Internet connection to fetch the latest emoji data
+- Windows 8.1+ recommended for colored emoji support (Segoe UI Emoji)
+- Python 3.6+ to run the generation script (optional, for regenerating emoji data)
+- Internet connection to fetch the latest emoji data (optional)
 
 ## Contributing
 

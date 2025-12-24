@@ -1,4 +1,4 @@
-unit EmojiPaintBox;
+unit EmojiView;
 
 interface
 
@@ -7,10 +7,10 @@ uses
   Vcl.ExtCtrls;
 
 const
-  EMOJI_PAINTBOX_VERSION = '0.5';
+  EMOJI_VIEW_VERSION = '0.5';
 
 type
-  TEmojiPaintBox = class(TPaintBox)
+  TEmojiView = class(TPaintBox)
   private
     FEmojiName: string;
     FPaddingPercentage: Integer;
@@ -37,9 +37,9 @@ implementation
 uses
   System.Types, System.Math, Winapi.Windows, EmojiUtils;
 
-{ TEmojiPaintBox }
+{ TEmojiView }
 
-constructor TEmojiPaintBox.Create(AOwner: TComponent);
+constructor TEmojiView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FEmojiName := 'waving hand';
@@ -47,17 +47,17 @@ begin
   FUseColoredEmojiAtDesignTime := False;
 end;
 
-class function TEmojiPaintBox.IsEmojiSupported: Boolean;
+class function TEmojiView.IsEmojiSupported: Boolean;
 begin
   Result := TEmojiRenderer.IsEmojiSupported;
 end;
 
-function TEmojiPaintBox.GetVersion: string;
+function TEmojiView.GetVersion: string;
 begin
-  Result := EMOJI_PAINTBOX_VERSION;
+  Result := EMOJI_VIEW_VERSION;
 end;
 
-procedure TEmojiPaintBox.DrawErrorMessage(const AMessage: string);
+procedure TEmojiView.DrawErrorMessage(const AMessage: string);
 var
   LRect: TRect;
 begin
@@ -72,7 +72,7 @@ begin
     DT_CENTER or DT_VCENTER or DT_WORDBREAK);
 end;
 
-procedure TEmojiPaintBox.Paint;
+procedure TEmojiView.Paint;
 const
   REFERENCE_SIZE = 100;
 var
@@ -141,7 +141,7 @@ begin
   end;
 end;
 
-procedure TEmojiPaintBox.SetEmojiName(const Value: string);
+procedure TEmojiView.SetEmojiName(const Value: string);
 begin
   if FEmojiName <> Value then
   begin
@@ -150,7 +150,7 @@ begin
   end;
 end;
 
-procedure TEmojiPaintBox.SetPaddingPercentage(const Value: Integer);
+procedure TEmojiView.SetPaddingPercentage(const Value: Integer);
 var
   LValue: Integer;
 begin
@@ -166,7 +166,7 @@ begin
   end;
 end;
 
-procedure TEmojiPaintBox.SetUseColoredEmojiAtDesignTime(const Value: Boolean);
+procedure TEmojiView.SetUseColoredEmojiAtDesignTime(const Value: Boolean);
 begin
   if FUseColoredEmojiAtDesignTime <> Value then
   begin
