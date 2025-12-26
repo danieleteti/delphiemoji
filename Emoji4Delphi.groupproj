@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{6D1395A0-2D28-4499-ABFA-4234F7735FCA}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="Emoji4DelphiRT.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Emoji4DelphiDT.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="Emoji4DelphiRT">
+        <MSBuild Projects="Emoji4DelphiRT.dproj"/>
+    </Target>
+    <Target Name="Emoji4DelphiRT:Clean">
+        <MSBuild Projects="Emoji4DelphiRT.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Emoji4DelphiRT:Make">
+        <MSBuild Projects="Emoji4DelphiRT.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Emoji4DelphiDT">
+        <MSBuild Projects="Emoji4DelphiDT.dproj"/>
+    </Target>
+    <Target Name="Emoji4DelphiDT:Clean">
+        <MSBuild Projects="Emoji4DelphiDT.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Emoji4DelphiDT:Make">
+        <MSBuild Projects="Emoji4DelphiDT.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="Emoji4DelphiRT;Emoji4DelphiDT"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="Emoji4DelphiRT:Clean;Emoji4DelphiDT:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="Emoji4DelphiRT:Make;Emoji4DelphiDT:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

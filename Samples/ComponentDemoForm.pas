@@ -52,6 +52,15 @@ type
     EmojiPad0: TEmojiImage;
     EmojiPad15: TEmojiImage;
     EmojiPad30: TEmojiImage;
+    pnlHoverDemo: TPanel;
+    lblHoverDemo: TLabel;
+    lblHoverHint: TLabel;
+    EmojiHover1: TEmojiImage;
+    EmojiHover2: TEmojiImage;
+    EmojiHover3: TEmojiImage;
+    EmojiHover4: TEmojiImage;
+    EmojiHover5: TEmojiImage;
+    EmojiHover6: TEmojiImage;
     procedure FormCreate(Sender: TObject);
     procedure btnSelectEmojiClick(Sender: TObject);
     procedure trkPaddingChange(Sender: TObject);

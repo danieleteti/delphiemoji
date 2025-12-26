@@ -407,4 +407,100 @@ object frmComponentDemo: TfrmComponentDemo
       PaddingPercentage = 30
     end
   end
+  object pnlHoverDemo: TPanel
+    Left = 510
+    Top = 340
+    Width = 280
+    Height = 250
+    BevelOuter = bvLowered
+    TabOrder = 6
+    object lblHoverDemo: TLabel
+      Left = 10
+      Top = 8
+      Width = 71
+      Height = 15
+      Caption = 'Hover Demo'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object lblHoverHint: TLabel
+      Left = 10
+      Top = 200
+      Width = 260
+      Height = 40
+      AutoSize = False
+      Caption = 'Move mouse over each emoji to see it change to its HoverEmojiName'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clGray
+      Font.Height = -11
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      WordWrap = True
+    end
+    object EmojiHover1: TEmojiImage
+      Left = 20
+      Top = 35
+      Width = 70
+      Height = 70
+      EmojiName = 'sleeping face'
+      HoverEmojiName = 'grinning face'
+      Hint = 'sleeping face -> grinning face'
+      ShowHint = True
+    end
+    object EmojiHover2: TEmojiImage
+      Left = 100
+      Top = 35
+      Width = 70
+      Height = 70
+      EmojiName = 'waning crescent moon'
+      HoverEmojiName = 'sun with face'
+      Hint = 'moon -> sun'
+      ShowHint = True
+    end
+    object EmojiHover3: TEmojiImage
+      Left = 180
+      Top = 35
+      Width = 70
+      Height = 70
+      EmojiName = 'folded hands'
+      HoverEmojiName = 'clapping hands'
+      Hint = 'folded hands -> clapping'
+      ShowHint = True
+    end
+    object EmojiHover4: TEmojiImage
+      Left = 20
+      Top = 115
+      Width = 70
+      Height = 70
+      EmojiName = 'red heart'
+      HoverEmojiName = 'beating heart'
+      Hint = 'heart -> beating heart'
+      ShowHint = True
+    end
+    object EmojiHover5: TEmojiImage
+      Left = 100
+      Top = 115
+      Width = 70
+      Height = 70
+      EmojiName = 'envelope'
+      HoverEmojiName = 'love letter'
+      Hint = 'envelope -> love letter'
+      ShowHint = True
+    end
+    object EmojiHover6: TEmojiImage
+      Left = 180
+      Top = 115
+      Width = 70
+      Height = 70
+      EmojiName = 'light bulb'
+      HoverEmojiName = 'high voltage'
+      Hint = 'light bulb -> high voltage'
+      ShowHint = True
+    end
+  end
 end

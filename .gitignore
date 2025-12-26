@@ -81,3 +81,14 @@ __recovery/
 modules/
 /Samples/VCLSample.res
 *.res
+/nul
+/compile_vcl2.bat
+/compile_button_demo.bat
+/compile_console.bat
+/compile_demo.bat
+/compile_package.bat
+/compile_vcl_style_demo.bat
+/compile_vcl.bat
+/build.bat
+/claude.md
+/.claude/settings.local.json

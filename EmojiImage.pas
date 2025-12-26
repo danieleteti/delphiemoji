@@ -7,9 +7,11 @@ uses
   UnicodeEmoji;
 
 const
-  EMOJI_IMAGE_VERSION = '0.5';
+  EMOJI_IMAGE_VERSION = '0.9.0';
 
 type
+  TEmojiChangedEvent = procedure(Sender: TObject; const OldEmoji, NewEmoji: string) of object;
+
   TEmojiImage = class(TGraphicControl)
   private
     FEmojiName: string;
@@ -17,6 +19,7 @@ type
     FPaddingPercentage: Integer;
     FUseColoredEmojiAtDesignTime: Boolean;
     FIsHovered: Boolean;
+    FOnEmojiChanged: TEmojiChangedEvent;
     procedure SetEmojiName(const Value: string);
     procedure SetHoverEmojiName(const Value: string);
     procedure SetPaddingPercentage(const Value: Integer);
@@ -24,6 +27,7 @@ type
     procedure DrawErrorMessage(const AMessage: string);
     function GetVersion: string;
     function GetCurrentEmoji: string;
+    procedure DoEmojiChanged(const OldEmoji, NewEmoji: string);
   protected
     procedure Paint; override;
     procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
@@ -37,8 +41,9 @@ type
     property EmojiName: string read FEmojiName write SetEmojiName;
     property HoverEmojiName: string read FHoverEmojiName write SetHoverEmojiName;
     property PaddingPercentage: Integer read FPaddingPercentage write SetPaddingPercentage default 0;
-    property UseColoredEmojiAtDesignTime: Boolean read FUseColoredEmojiAtDesignTime write SetUseColoredEmojiAtDesignTime default False;
+    property UseColoredEmojiAtDesignTime: Boolean read FUseColoredEmojiAtDesignTime write SetUseColoredEmojiAtDesignTime default True;
     property Version: string read GetVersion;
+    property OnEmojiChanged: TEmojiChangedEvent read FOnEmojiChanged write FOnEmojiChanged;
     { Inherited properties }
     property Align;
     property Anchors;
@@ -86,7 +91,7 @@ begin
   FEmojiName := 'waving hand';
   FHoverEmojiName := '';
   FPaddingPercentage := 0;
-  FUseColoredEmojiAtDesignTime := False;
+  FUseColoredEmojiAtDesignTime := True;
   FIsHovered := False;
 end;
 
@@ -106,6 +111,12 @@ begin
     Result := FHoverEmojiName
   else
     Result := FEmojiName;
+end;
+
+procedure TEmojiImage.DoEmojiChanged(const OldEmoji, NewEmoji: string);
+begin
+  if Assigned(FOnEmojiChanged) then
+    FOnEmojiChanged(Self, OldEmoji, NewEmoji);
 end;
 
 procedure TEmojiImage.CMMouseEnter(var Message: TMessage);
@@ -151,6 +162,7 @@ var
   LScale: Double;
   LEmojiSize: TSize;
   LX, LY: Integer;
+  LCurrentEmojiName: string;
 begin
   inherited;
 
@@ -161,10 +173,13 @@ begin
     Exit;
   end;
 
-  LEmoji := FindEmojiByName(GetCurrentEmoji);
+  // Determine which emoji to display
+  LCurrentEmojiName := GetCurrentEmoji;
+  LEmoji := FindEmojiByName(LCurrentEmojiName);
+
   if LEmoji = '' then
   begin
-    DrawErrorMessage('Emoji not found: "' + GetCurrentEmoji + '"');
+    DrawErrorMessage('Emoji not found: "' + LCurrentEmojiName + '"');
     Exit;
   end;
 
@@ -193,6 +208,7 @@ begin
     LEmojiSize := TEmojiRenderer.MeasureEmoji(LEmoji, LFontSize);
     LX := (Width - LEmojiSize.Width) div 2;
     LY := (Height - LEmojiSize.Height) div 2;
+
     TEmojiRenderer.DrawEmoji(Canvas, LEmoji, LX, LY, LFontSize);
   end
   else
@@ -209,10 +225,14 @@ begin
 end;
 
 procedure TEmojiImage.SetEmojiName(const Value: string);
+var
+  LOldEmoji: string;
 begin
   if FEmojiName <> Value then
   begin
+    LOldEmoji := FEmojiName;
     FEmojiName := Value;
+    DoEmojiChanged(LOldEmoji, Value);
     Invalidate;
   end;
 end;

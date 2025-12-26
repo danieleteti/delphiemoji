@@ -4,7 +4,7 @@ interface
 
 uses
   Vcl.Graphics, System.SysUtils, System.Types, System.Generics.Collections,
-  System.Math, Winapi.Windows, Direct2D, D2D1, Winapi.DxgiFormat;
+  System.Math, Winapi.Windows, D2D1, Winapi.DxgiFormat;
 
 type
   // Configuration for emoji rendering
@@ -15,9 +15,10 @@ type
     AntialiasMode: D2D1_TEXT_ANTIALIAS_MODE;
     ClearTypeEnabled: Boolean;
     EnableColorFont: Boolean;   // Enable colored emoji
+    Alpha: Single;              // Opacity (0.0 = transparent, 1.0 = opaque)
     class function Default: TEmojiRenderConfig; static;
     class function Create(AFontSize: Single; ABackgroundColor: TColor = clNone;
-      ATextColor: TColor = clBlack): TEmojiRenderConfig; static;
+      ATextColor: TColor = clBlack; AAlpha: Single = 1.0): TEmojiRenderConfig; static;
   end;
 
   // Information about an available emoji font
@@ -71,8 +72,9 @@ type
   EEmojiFactoryException = class(EEmojiRenderException);
   EEmojiNotSupportedException = class(EEmojiRenderException);
 
-// Utility function to convert TColor to D2D1_COLOR_F
-function ColorToD2D1Color(Color: TColor): D2D1_COLOR_F;
+// Utility functions to convert TColor to D2D1_COLOR_F
+function ColorToD2D1Color(Color: TColor): D2D1_COLOR_F; overload;
+function ColorToD2D1Color(Color: TColor; Alpha: Single): D2D1_COLOR_F; overload;
 
 implementation
 
@@ -86,7 +88,7 @@ const
     'Symbola'              // Fallback Unicode
   );
 
-// Utility function to convert TColor to D2D1_COLOR_F
+// Utility functions to convert TColor to D2D1_COLOR_F
 function ColorToD2D1Color(Color: TColor): D2D1_COLOR_F;
 var
   RGB: Cardinal;
@@ -96,6 +98,12 @@ begin
   Result.g := GetGValue(RGB) / 255.0;
   Result.b := GetBValue(RGB) / 255.0;
   Result.a := 1.0;
+end;
+
+function ColorToD2D1Color(Color: TColor; Alpha: Single): D2D1_COLOR_F;
+begin
+  Result := ColorToD2D1Color(Color);
+  Result.a := Alpha;
 end;
 
 { TEmojiRenderConfig }
@@ -108,15 +116,17 @@ begin
   Result.AntialiasMode := D2D1_TEXT_ANTIALIAS_MODE_CLEARTYPE;
   Result.ClearTypeEnabled := True;
   Result.EnableColorFont := True;
+  Result.Alpha := 1.0;
 end;
 
 class function TEmojiRenderConfig.Create(AFontSize: Single; ABackgroundColor: TColor;
-  ATextColor: TColor): TEmojiRenderConfig;
+  ATextColor: TColor; AAlpha: Single): TEmojiRenderConfig;
 begin
   Result := Default;
   Result.FontSize := AFontSize;
   Result.BackgroundColor := ABackgroundColor;
   Result.TextColor := ATextColor;
+  Result.Alpha := AAlpha;
 end;
 
 { TEmojiRenderer }
@@ -376,9 +386,9 @@ begin
     if FAILED(Hr) then
       raise EEmojiRenderException.CreateFmt('Failed to create text layout: HRESULT = 0x%x', [Hr]);
 
-    // Create brush for text
+    // Create brush for text (with alpha support)
     Hr := RenderTarget.CreateSolidColorBrush(
-      ColorToD2D1Color(Config.TextColor),
+      ColorToD2D1Color(Config.TextColor, Config.Alpha),
       nil,
       Brush
     );

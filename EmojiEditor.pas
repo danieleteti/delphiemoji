@@ -9,26 +9,29 @@ type
   TEmojiProperty = class(TStringProperty)
   public
     function GetAttributes: TPropertyAttributes; override;
-    procedure GetValues(Proc: TGetStrProc); override;
+    procedure Edit; override;
   end;
 
 implementation
+
+uses
+  EmojiSelectorForm;
 
 { TEmojiProperty }
 
 function TEmojiProperty.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paValueList, paSortList, paAutoUpdate];
+  // paDialog: show "..." button to open selector
+  Result := [paDialog];
 end;
 
-procedure TEmojiProperty.GetValues(Proc: TGetStrProc);
+procedure TEmojiProperty.Edit;
 var
-  LEmojiNames: TArray<string>;
   LName: string;
 begin
-  LEmojiNames := GetAllEmojiNames;
-  for LName in LEmojiNames do
-    Proc(LName);
+  LName := GetValue;
+  if TEmojiSelector.SelectEmoji(LName) then
+    SetValue(LName);
 end;
 
 end.

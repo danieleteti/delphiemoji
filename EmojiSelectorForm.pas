@@ -22,12 +22,16 @@ type
     FbtnPrev: TButton;
     FbtnNext: TButton;
     FlblPage: TLabel;
+    FedtPage: TEdit;
+    FlblOfPages: TLabel;
     FOriginalEmojiNames: TStringList;
     FFilteredEmojiNames: TStringList;
     FSelectedEmojiName: string;
     FCurrentPage: Integer;
     FTotalPages: Integer;
     procedure edtSearchChange(Sender: TObject);
+    procedure edtPageKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure edtPageKeyPress(Sender: TObject; var Key: Char);
     procedure ListViewCustomDrawItem(Sender: TCustomListView; Item: TListItem;
       State: TCustomDrawState; var DefaultDraw: Boolean);
     procedure btnOKClick(Sender: TObject);
@@ -39,6 +43,7 @@ type
     procedure FilterEmojis;
     procedure ShowPage(APage: Integer);
     procedure UpdatePagingControls;
+    procedure GoToPageFromEdit;
   public
     class function SelectEmoji(var AEmojiName: string): Boolean;
   end;
@@ -133,7 +138,6 @@ begin
   FbtnOK.Parent := FpnlBottom;
   FbtnOK.Caption := 'OK';
   FbtnOK.ModalResult := mrOk;
-  FbtnOK.Default := True;
   FbtnOK.Width := 80;
   FbtnOK.Top := 8;
   FbtnOK.Left := FbtnCancel.Left - FbtnOK.Width - 8;
@@ -155,15 +159,31 @@ begin
   FbtnPrev.Left := 8;
   FbtnPrev.OnClick := btnPrevClick;
 
+  // Page label "Page"
   FlblPage := TLabel.Create(FpnlPaging);
   FlblPage.Parent := FpnlPaging;
-  FlblPage.AutoSize := False;
-  FlblPage.Width := 200;
-  FlblPage.Alignment := taCenter;
+  FlblPage.AutoSize := True;
   FlblPage.Top := 10;
-  FlblPage.Left := (FpnlPaging.ClientWidth - FlblPage.Width) div 2;
-  FlblPage.Anchors := [akTop];
-  FlblPage.Caption := '';
+  FlblPage.Left := FbtnPrev.Left + FbtnPrev.Width + 20;
+  FlblPage.Caption := 'Page';
+
+  // Page number edit
+  FedtPage := TEdit.Create(FpnlPaging);
+  FedtPage.Parent := FpnlPaging;
+  FedtPage.Width := 40;
+  FedtPage.Top := 6;
+  FedtPage.Left := FlblPage.Left + FlblPage.Width + 6;
+  FedtPage.Alignment := taCenter;
+  FedtPage.OnKeyDown := edtPageKeyDown;
+  FedtPage.OnKeyPress := edtPageKeyPress;
+
+  // "of X (Y emoji)" label
+  FlblOfPages := TLabel.Create(FpnlPaging);
+  FlblOfPages.Parent := FpnlPaging;
+  FlblOfPages.AutoSize := True;
+  FlblOfPages.Top := 10;
+  FlblOfPages.Left := FedtPage.Left + FedtPage.Width + 6;
+  FlblOfPages.Caption := 'of 1';
 
   FbtnNext := TButton.Create(FpnlPaging);
   FbtnNext.Parent := FpnlPaging;
@@ -270,11 +290,40 @@ end;
 
 procedure TEmojiSelector.UpdatePagingControls;
 begin
-  FlblPage.Caption := Format('Page %d of %d  (%d emoji)',
-    [FCurrentPage + 1, FTotalPages, FFilteredEmojiNames.Count]);
+  FedtPage.Text := IntToStr(FCurrentPage + 1);
+  FlblOfPages.Caption := Format('of %d  (%d emoji)', [FTotalPages, FFilteredEmojiNames.Count]);
 
   FbtnPrev.Enabled := FCurrentPage > 0;
   FbtnNext.Enabled := FCurrentPage < FTotalPages - 1;
+end;
+
+procedure TEmojiSelector.edtPageKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+  begin
+    Key := 0; // Block propagation to form
+    GoToPageFromEdit;
+  end;
+end;
+
+procedure TEmojiSelector.edtPageKeyPress(Sender: TObject; var Key: Char);
+begin
+  // Allow only digits and backspace
+  if not CharInSet(Key, ['0'..'9', #8]) then
+    Key := #0;
+end;
+
+procedure TEmojiSelector.GoToPageFromEdit;
+var
+  LPage: Integer;
+begin
+  if TryStrToInt(FedtPage.Text, LPage) then
+  begin
+    // Convert from 1-based (user) to 0-based (internal)
+    ShowPage(LPage - 1);
+  end
+  else
+    UpdatePagingControls; // Reset to current page
 end;
 
 procedure TEmojiSelector.btnPrevClick(Sender: TObject);

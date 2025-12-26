@@ -1,4 +1,4 @@
-package EmojiComponent;
+package Emoji4DelphiDT;
 
 {$R *.res}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
@@ -9,38 +9,36 @@ package EmojiComponent;
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS OFF}
+{$LOCALSYMBOLS ON}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
-{$OPTIMIZATION ON}
-{$OVERFLOWCHECKS OFF}
-{$RANGECHECKS OFF}
-{$REFERENCEINFO OFF}
+{$OPTIMIZATION OFF}
+{$OVERFLOWCHECKS ON}
+{$RANGECHECKS ON}
+{$REFERENCEINFO ON}
 {$SAFEDIVIDE OFF}
-{$STACKFRAMES OFF}
+{$STACKFRAMES ON}
 {$TYPEDADDRESS OFF}
 {$VARSTRINGCHECKS ON}
 {$WRITEABLECONST OFF}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DEFINE RELEASE}
+{$DEFINE DEBUG}
 {$ENDIF IMPLICITBUILDING}
-{$DESCRIPTION 'Emoji Image Component'}
+{$DESCRIPTION 'Emoji4Delphi - Design Time Package'}
 {$DESIGNONLY}
 {$IMPLICITBUILD ON}
 
 requires
   rtl,
+  vcl,
   designide,
-  vcl;
+  Emoji4DelphiRT;
 
 contains
-  UnicodeEmoji in 'UnicodeEmoji.pas',
-  EmojiUtils in 'EmojiUtils.pas',
-  EmojiImage in 'EmojiImage.pas',
-  EmojiEditor in 'EmojiEditor.pas',
   EmojiReg in 'EmojiReg.pas',
-  EmojiSelectorForm in 'EmojiSelectorForm.pas',
-  EmojiComponentEditor in 'EmojiComponentEditor.pas';
+  EmojiEditor in 'EmojiEditor.pas',
+  EmojiComponentEditor in 'EmojiComponentEditor.pas',
+  EmojiSelectorForm in 'EmojiSelectorForm.pas' {frmEmojiSelector};
 
 end.
